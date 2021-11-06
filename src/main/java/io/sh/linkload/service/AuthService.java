@@ -2,6 +2,7 @@ package io.sh.linkload.service;
 
 import java.util.UUID;
 
+import javax.mail.Message;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,17 +10,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import io.sh.linkload.dto.RegisterRequest;
+import io.sh.linkload.model.NotificationEmail;
 import io.sh.linkload.model.User;
 import io.sh.linkload.model.VerificationToken;
 import io.sh.linkload.repository.UserRepository;
 import io.sh.linkload.repository.VerificationTokenRepository;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class AuthService {
-    // maybe put autowired
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final EmailService emailService;
 
     @Transactional
     public void signup(RegisterRequest registerRequest) {
@@ -31,6 +35,8 @@ public class AuthService {
 
         userRepository.save(user);
         String token = generateVerificationToken(user);
+        emailService.sendMail(new NotificationEmail("Activate Your LinkLoad Account", user.getEmail(),
+                "http://localhost:8080/api/auth/accountVerification/" + token));
     }
 
     private String generateVerificationToken(User user) {
