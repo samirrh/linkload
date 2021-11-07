@@ -1,6 +1,5 @@
 package io.sh.linkload.service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
