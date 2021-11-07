@@ -1,11 +1,10 @@
 package io.sh.linkload.service;
 
+import java.util.Optional;
 import java.util.UUID;
 
-import javax.mail.Message;
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,4 +47,16 @@ public class AuthService {
         verificationTokenRepository.save(verificationToken);
         return token;
     }
+
+    @Transactional
+    public void activateAccount(String token) {
+        VerificationToken verficationToken = verificationTokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalStateException("Invalid Token"));
+        String username = verficationToken.getUser().getUsername();
+        User userToActivate = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("User: " + username + " with this token not found"));
+        userToActivate.setVerified(true);
+        userRepository.save(userToActivate);
+    }
+
 }
