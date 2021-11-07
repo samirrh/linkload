@@ -27,7 +27,7 @@ public class JwtProvider {
         try {
             keyStore = KeyStore.getInstance("JKS");
             InputStream resourceAsStream = getClass().getResourceAsStream("/linkloadstore.jks");
-            keyStore.load(resourceAsStream, "secret".toCharArray());
+            keyStore.load(resourceAsStream, "lljwt1".toCharArray());
         } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
             throw new IllegalStateException("Exception occurred while loading keystore");
         }
@@ -41,7 +41,7 @@ public class JwtProvider {
 
     private PrivateKey getPrivateKey() {
         try {
-            return (PrivateKey) keyStore.getKey("linkloadstore", "secret".toCharArray());
+            return (PrivateKey) keyStore.getKey("linkloadstore", "lljwt1".toCharArray());
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
             throw new IllegalStateException("Unable to retrieve public key from keystore");
         }
