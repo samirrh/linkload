@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.sh.linkload.dto.AuthenticationResponse;
+import io.sh.linkload.dto.LoginRequest;
 import io.sh.linkload.dto.RegisterRequest;
 import io.sh.linkload.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,11 @@ public class AuthController {
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
         authService.signup(registerRequest);
         return new ResponseEntity<>(registerRequest.getUsername() + " signed up!", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
 
     @GetMapping("activate/{token}")
