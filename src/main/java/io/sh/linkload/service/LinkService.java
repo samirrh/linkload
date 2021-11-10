@@ -14,11 +14,9 @@ import io.sh.linkload.model.User;
 import io.sh.linkload.repository.LinkRepository;
 import io.sh.linkload.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class LinkService {
 
     private final LinkRepository linkRepository;

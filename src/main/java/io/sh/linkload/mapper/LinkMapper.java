@@ -9,8 +9,6 @@ import io.sh.linkload.dto.LinkResponse;
 import io.sh.linkload.model.Link;
 import io.sh.linkload.model.User;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring")
 public interface LinkMapper {
 

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.sh.linkload.dto.LinkRequest;
 import io.sh.linkload.dto.LinkResponse;
-import io.sh.linkload.model.Link;
 import io.sh.linkload.service.LinkService;
 import lombok.AllArgsConstructor;
 
