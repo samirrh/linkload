@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LinkDto {
+public class LinkResponse {
     private Long linkId;
     private String linkName;
+    private String userName;
     private String url;
     private String description;
     private Integer visits;
