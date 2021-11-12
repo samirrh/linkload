@@ -34,7 +34,7 @@ public class LinkController {
         return ResponseEntity.status(HttpStatus.OK).body(linkService.getAll());
     }
 
-    @GetMapping("{username}")
+    @GetMapping("user/{username}")
     public ResponseEntity<List<LinkResponse>> getUserLinks(@PathVariable String username) {
         return ResponseEntity.status(HttpStatus.OK).body(linkService.getUserLinks(username));
     }
