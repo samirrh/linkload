@@ -43,4 +43,9 @@ public class LinkService {
         return linkRepository.findAllByUser(user).stream().map(linkMapper::mapToResponse).collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteLink(Long id) {
+        linkRepository.deleteById(id);
+    }
+
 }

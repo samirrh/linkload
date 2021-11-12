@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,8 +34,13 @@ public class LinkController {
         return ResponseEntity.status(HttpStatus.OK).body(linkService.getAll());
     }
 
-    @GetMapping("user/{username}")
+    @GetMapping("{username}")
     public ResponseEntity<List<LinkResponse>> getUserLinks(@PathVariable String username) {
         return ResponseEntity.status(HttpStatus.OK).body(linkService.getUserLinks(username));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteLink(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body("deleted link");
     }
 }
