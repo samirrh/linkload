@@ -1,5 +1,6 @@
 package io.sh.linkload.service;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.sh.linkload.dto.AuthenticationResponse;
 import io.sh.linkload.dto.LoginRequest;
+import io.sh.linkload.dto.RefreshTokenRequest;
 import io.sh.linkload.dto.RegisterRequest;
 import io.sh.linkload.model.NotificationEmail;
 import io.sh.linkload.model.User;
@@ -23,6 +25,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -30,8 +33,8 @@ public class AuthService {
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
-    @Transactional
     public void signup(RegisterRequest registerRequest) {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
@@ -45,6 +48,17 @@ public class AuthService {
                 "http://localhost:8080/api/auth/activate/" + token));
     }
 
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String token = jwtProvider.generateToken(authenticate);
+        return AuthenticationResponse.builder().authenticationToken(token)
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .username(loginRequest.getUsername()).build();
+    }
+
     private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
@@ -55,7 +69,6 @@ public class AuthService {
         return token;
     }
 
-    @Transactional
     public void activateAccount(String token) {
         VerificationToken verficationToken = verificationTokenRepository.findByToken(token)
                 .orElseThrow(() -> new IllegalStateException("Invalid Token"));
@@ -66,12 +79,13 @@ public class AuthService {
         userRepository.save(userToActivate);
     }
 
-    public AuthenticationResponse login(LoginRequest loginRequest) {
-        Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String authToken = jwtProvider.generateToken(authenticate);
-        return new AuthenticationResponse(loginRequest.getUsername(), authToken);
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
+        return AuthenticationResponse.builder().authenticationToken(token)
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .username(refreshTokenRequest.getUsername()).build();
     }
 
     @Transactional(readOnly = true)
