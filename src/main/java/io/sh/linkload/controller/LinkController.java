@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +42,14 @@ public class LinkController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteLink(@PathVariable Long id) {
+        linkService.deleteLink(id);
         return ResponseEntity.status(HttpStatus.OK).body("deleted link");
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<String> updateLink(@PathVariable Long id, @RequestBody LinkRequest linkRequest) {
+        linkRequest.setLinkId(id);
+        linkService.updateLink(linkRequest);
+        return ResponseEntity.status(HttpStatus.OK).body("Updated");
     }
 }

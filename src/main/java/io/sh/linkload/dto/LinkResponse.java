@@ -15,6 +15,6 @@ public class LinkResponse {
     private String userName;
     private String url;
     private String description;
-    private Integer visits;
-    private Boolean showVisits;
+    private Integer views;
+    private Boolean showViews;
 }

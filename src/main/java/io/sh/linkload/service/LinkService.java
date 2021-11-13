@@ -44,6 +44,24 @@ public class LinkService {
     }
 
     @Transactional
+    public void updateLink(LinkRequest linkRequest) {
+        Link link = linkRepository.findById(linkRequest.getLinkId())
+                .orElseThrow(() -> new IllegalStateException("Cant find link"));
+        if (linkRequest.getDescription() != null) {
+            link.setDescription(linkRequest.getDescription());
+        }
+        if (linkRequest.getLinkName() != null) {
+            link.setLinkName(linkRequest.getLinkName());
+        }
+        if (linkRequest.getShowViews() != null || linkRequest.getShowViews() == link.getShowViews()) {
+            link.setShowViews(linkRequest.getShowViews());
+        }
+        if (linkRequest.getUrl() != null) {
+            link.setUrl(linkRequest.getUrl());
+        }
+    }
+
+    @Transactional
     public void deleteLink(Long id) {
         linkRepository.deleteById(id);
     }
