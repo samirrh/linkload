@@ -45,7 +45,7 @@ public class AuthService {
         userRepository.save(user);
         String token = generateVerificationToken(user);
         emailService.sendMail(new NotificationEmail("Activate Your LinkLoad Account", user.getEmail(),
-                "http://localhost:8080/api/auth/activate/" + token));
+                "http://localhost:3000/admin/activate/" + token));
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest) {
